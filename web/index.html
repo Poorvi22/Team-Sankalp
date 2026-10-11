@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BizPilot AI — Supply Chain & Business Operations</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232563eb'/%3E%3Cpath d='M8 22V14M14 22V9M20 22v-6M26 22V12' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+
+<!-- ============================ LOGIN ============================ -->
+<main id="login" hidden>
+  <section class="login-brand">
+    <div class="logo-mark big"><svg viewBox="0 0 32 32" width="44" height="44"><rect width="32" height="32" rx="9" fill="#2563eb"/><path d="M8 22V14M14 22V9M20 22v-6M26 22V12" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></div>
+    <h1>BizPilot AI</h1>
+    <p class="sub">Supply Chain &amp; Business Operations Companion</p>
+    <div class="tagline">Ask. Navigate. Operate. Decide.</div>
+    <p class="lead">An assistant that lives inside your application: it knows every page, filter, record and API — and can operate them for you, with you in control.</p>
+    <ul class="feats">
+      <li><span class="fi blue"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span><div><b>Natural-language navigation</b><small>Find any report or record instantly — it sets the filters for you.</small></div></li>
+      <li><span class="fi indigo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></span><div><b>Analysis you can trace</b><small>Trends, comparisons and “why” — every claim links to its evidence.</small></div></li>
+      <li><span class="fi violet"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 7.9-8 9-4.8-1.1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><div><b>Safe, guarded actions</b><small>Every change is previewed and confirmed by you, and audited.</small></div></li>
+    </ul>
+  </section>
+  <section class="login-form">
+    <form id="loginForm" novalidate>
+      <h2>Welcome back</h2>
+      <p class="sub">Sign in to access your application</p>
+      <label>Email address<input name="email" type="email" placeholder="Enter your email" autocomplete="username" required></label>
+      <label>Password<span class="pw"><input name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required><button type="button" id="togglePw" aria-label="Show password">👁</button></span></label>
+      <div class="login-error" id="loginError" hidden></div>
+      <button class="btn primary lg" type="submit">Sign in</button>
+      <div class="demo-box"><b>Demo workspace</b><span>Synthetic 24-month tenant. Manager: <code>michael@bizpilot.demo</code> / <code>demo1234</code></span><button type="button" id="fillDemo" class="btn ghost sm">Fill demo credentials</button></div>
+    </form>
+  </section>
+</main>
+
+<!-- ============================ APP ============================ -->
+<div id="app" hidden>
+  <header class="topbar">
+    <div class="brand"><svg viewBox="0 0 32 32" width="34" height="34"><rect width="32" height="32" rx="9" fill="#2563eb"/><path d="M8 22V14M14 22V9M20 22v-6M26 22V12" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg><div><b>BizPilot AI</b><small>Supply Chain &amp; Business Operations</small></div></div>
+    <label class="gsearch"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="globalSearch" type="text" placeholder="Ask anything…  e.g. “low stock steel”, “orders from Europe last quarter”" aria-label="Quick ask"><kbd>Enter ↵</kbd></label>
+    <div class="top-right">
+      <button class="bell" id="bell" aria-label="Pending approvals"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0112 0v5l1.5 2h-15z"/><path d="M10 21h4"/></svg><b id="bellCount" hidden></b></button>
+      <div id="userBox" class="userbox"></div>
+    </div>
+  </header>
+  <aside class="sidebar"><nav id="nav"></nav><div class="side-foot" id="datasetInfo"></div></aside>
+  <main class="main">
+    <div class="tabbar"><div id="tabs" class="tabs" role="tablist"></div><button id="newTab" class="tab-add" title="New tab" aria-label="New tab">+</button></div>
+    <div class="page" id="pageRoot" data-page-id=""></div>
+  </main>
+  <aside class="agent" id="agent" aria-label="AI assistant"></aside>
+  <button class="agent-fab" id="agentFab" aria-label="Open assistant"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 4v4M9 13v1.5M15 13v1.5"/></svg></button>
+</div>
+<div id="modal" class="modal" hidden></div>
+<script type="module" src="/static/js/app.js"></script>
+</body>
+</html>

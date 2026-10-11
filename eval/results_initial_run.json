@@ -1,0 +1,459 @@
+{
+  "generated_at": "2026-10-10T18:19:54+00:00",
+  "corpus": {
+    "dev": 129,
+    "heldout": 70,
+    "retrieval_queries": 30,
+    "scenarios": 10
+  },
+  "metrics": [
+    {
+      "metric": "Intent routing accuracy — dev set",
+      "value": "99.2% (129 utterances)",
+      "target": "≥ 95%",
+      "note": "Set used while building the router."
+    },
+    {
+      "metric": "Intent routing accuracy — held-out set",
+      "value": "75.7% (70 utterances)",
+      "target": "≥ 85%",
+      "note": "Written before tuning; terser / more casual wording. Optimistic: same author as the system."
+    },
+    {
+      "metric": "Intent-to-destination accuracy (right page / report)",
+      "value": "85.5% (69 navigation requests)",
+      "target": "≥ 95%",
+      "note": "Dev + held-out."
+    },
+    {
+      "metric": "UI-state correctness (all filters, range, sort exactly right)",
+      "value": "79.0% (62 requests)",
+      "target": "≥ 90%",
+      "note": "Per-filter recall 78.8%; 0 unrequested filters set."
+    },
+    {
+      "metric": "Slot extraction (metric / period / entity / N / horizon)",
+      "value": "99.1% (114 slots)",
+      "target": "≥ 95%",
+      "note": "metric 97.8%, period 100.0%, entities 100.0%, top_n 100.0%, horizon 100.0%"
+    },
+    {
+      "metric": "Multi-step task success",
+      "value": "10/10 scenarios",
+      "target": "100%",
+      "note": "Verified against the database. Avg 2.6 steps, 44 ms per scenario (incl. confirm)."
+    },
+    {
+      "metric": "Numeric faithfulness vs independent SQL",
+      "value": "6/6 answers match",
+      "target": "100%",
+      "note": "Revenue, orders, top-N, MoM compare, stock-out set, on-time rate recomputed with separate hand-written SQL."
+    },
+    {
+      "metric": "Explanation evidence links valid",
+      "value": "9/9 bullets link to a real view",
+      "target": "100%",
+      "note": "Every claim in a 'why' answer carries a source chip with valid page + filters."
+    },
+    {
+      "metric": "Retrieval over app metadata — MRR@10",
+      "value": "0.794 (R@1 70.0%, R@3 90.0%) over 359 docs",
+      "target": "≥ 0.80",
+      "note": "30 queries for pages, widgets, filters and APIs."
+    },
+    {
+      "metric": "Retrieval at scale (+600 synthetic distractor components)",
+      "value": "0.654 (R@1 60.0%, R@3 66.7%) over 959 docs",
+      "target": "≥ 0.70",
+      "note": "Hard negatives drawn from the same vocabulary."
+    },
+    {
+      "metric": "Action hallucination (invalid page / filter emitted)",
+      "value": "0 of 199 turns",
+      "target": "0",
+      "note": "Every emitted navigate action is checked against the page's declared filter schema."
+    },
+    {
+      "metric": "Writes executed without confirmation",
+      "value": "0 of 199 turns; 84.4% of write requests produced a confirmation/form",
+      "target": "0",
+      "note": "Database version counter must not change during a turn."
+    },
+    {
+      "metric": "Out-of-scope / adversarial requests handled safely",
+      "value": "100.0% (12 requests)",
+      "target": "100%",
+      "note": "No navigation, no write plan, no invented answer."
+    },
+    {
+      "metric": "Latency, fast path (end-to-end, in-process)",
+      "value": "p50 3 ms · p95 26 ms · max 47 ms",
+      "target": "p95 < 150 ms",
+      "note": "Warm; first request after start-up 42 ms. Excludes network and LLM. No LLM call in any case."
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "bulk replenishment (plan -> confirm -> drafts)",
+      "ok": true,
+      "steps": 6,
+      "ms": 13.3,
+      "note": "8 drafts for 8/8 at-risk products"
+    },
+    {
+      "name": "single PO: form pre-fill -> confirm",
+      "ok": true,
+      "steps": 3,
+      "ms": 52.9,
+      "note": ""
+    },
+    {
+      "name": "submit drafts (auto-approve <= $50k, queue above)",
+      "ok": true,
+      "steps": 2,
+      "ms": 65.9,
+      "note": "16 drafts"
+    },
+    {
+      "name": "approvals respect role limit",
+      "ok": true,
+      "steps": 2,
+      "ms": 62.2,
+      "note": "3 approved, 2 above limit stay queued"
+    },
+    {
+      "name": "stock adjustment applied",
+      "ok": true,
+      "steps": 2,
+      "ms": 57.3,
+      "note": ""
+    },
+    {
+      "name": "receive PO increases stock",
+      "ok": true,
+      "steps": 2,
+      "ms": 53.2,
+      "note": ""
+    },
+    {
+      "name": "delete only drafts (non-draft refused)",
+      "ok": true,
+      "steps": 3,
+      "ms": 51.7,
+      "note": ""
+    },
+    {
+      "name": "cancelling a confirmation changes nothing",
+      "ok": true,
+      "steps": 2,
+      "ms": 60.5,
+      "note": ""
+    },
+    {
+      "name": "follow-up ('and for Europe?') inherits metric + periods",
+      "ok": true,
+      "steps": 2,
+      "ms": 7.5,
+      "note": ""
+    },
+    {
+      "name": "explain_change finds Metals + supplier delays, with linked evidence",
+      "ok": true,
+      "steps": 2,
+      "ms": 15.1,
+      "note": "9/9 evidence links valid"
+    }
+  ],
+  "by_set": {
+    "dev": {
+      "n": 129,
+      "intent_acc": 99.2,
+      "dest_acc": 96.0,
+      "dest_n": 50,
+      "ui_exact": 88.6,
+      "ui_n": 44,
+      "ui_key_recall": 90.0,
+      "ui_extra_keys": 0,
+      "slot_acc": 100.0,
+      "slot_n": 72,
+      "slot_detail": {
+        "metric": 100.0,
+        "period": 100.0,
+        "entities": 100.0,
+        "top_n": 100.0,
+        "horizon": 100.0
+      },
+      "write_confirmed": 85.7,
+      "write_n": 21,
+      "oos_safe": 100.0,
+      "oos_n": 7,
+      "halluc": 0,
+      "unconfirmed_writes": 0
+    },
+    "heldout": {
+      "n": 70,
+      "intent_acc": 75.7,
+      "dest_acc": 57.9,
+      "dest_n": 19,
+      "ui_exact": 55.6,
+      "ui_n": 18,
+      "ui_key_recall": 43.8,
+      "ui_extra_keys": 0,
+      "slot_acc": 97.6,
+      "slot_n": 42,
+      "slot_detail": {
+        "metric": 93.8,
+        "period": 100.0,
+        "top_n": 100.0,
+        "entities": 100.0,
+        "horizon": 100.0
+      },
+      "write_confirmed": 81.8,
+      "write_n": 11,
+      "oos_safe": 100.0,
+      "oos_n": 5,
+      "halluc": 0,
+      "unconfirmed_writes": 0
+    }
+  },
+  "caveat": "Synthetic corpus authored with the system; held-out set is untuned but not independent. No real-user traffic was measured.",
+  "failures": [
+    {
+      "set": "dev",
+      "u": "show approved POs for Global Metals",
+      "expected": "show_view",
+      "got": "show_view",
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "dev",
+      "u": "show purchase orders for last quarter sorted by amount",
+      "expected": "show_view",
+      "got": "show_view",
+      "failed_checks": [
+        "ui_state"
+      ]
+    },
+    {
+      "set": "dev",
+      "u": "show Rotterdam stock that is low",
+      "expected": "show_view",
+      "got": "show_view",
+      "failed_checks": [
+        "ui_state"
+      ]
+    },
+    {
+      "set": "dev",
+      "u": "show processing orders",
+      "expected": "show_view",
+      "got": null,
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "dev",
+      "u": "analyze sales trend for 2025",
+      "expected": "trend",
+      "got": "trend",
+      "failed_checks": [
+        "ui_state"
+      ]
+    },
+    {
+      "set": "dev",
+      "u": "approve PO-2026-0276",
+      "expected": "approve_po",
+      "got": "approve_po",
+      "failed_checks": [
+        "write_needs_confirmation"
+      ]
+    },
+    {
+      "set": "dev",
+      "u": "mark order SO-106936 as shipped",
+      "expected": "update_order_status",
+      "got": "update_order_status",
+      "failed_checks": [
+        "write_needs_confirmation"
+      ]
+    },
+    {
+      "set": "dev",
+      "u": "reactivate Steel Supplies Co.",
+      "expected": "update_supplier_status",
+      "got": "update_supplier_status",
+      "failed_checks": [
+        "write_needs_confirmation"
+      ]
+    },
+    {
+      "set": "heldout",
+      "u": "anything waiting for my approval?",
+      "expected": "show_view",
+      "got": null,
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout",
+      "u": "european orders this quarter",
+      "expected": "show_view",
+      "got": null,
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout",
+      "u": "stock levels sorted by lowest stock",
+      "expected": "show_view",
+      "got": null,
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout",
+      "u": "which shipments are late",
+      "expected": "show_view",
+      "got": null,
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout",
+      "u": "Dallas inventory",
+      "expected": "show_view",
+      "got": null,
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout",
+      "u": "OceanLink deliveries",
+      "expected": "show_view",
+      "got": null,
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout",
+      "u": "all shipped orders from latam",
+      "expected": "show_view",
+      "got": null,
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout",
+      "u": "what are you able to do",
+      "expected": "help",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout",
+      "u": "reset everything on this page",
+      "expected": "reset_filters",
+      "got": "explain_page",
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout",
+      "u": "revenue for last quarter?",
+      "expected": "kpi_query",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout",
+      "u": "what percent of orders were cancelled last quarter",
+      "expected": "kpi_query",
+      "got": "kpi_query",
+      "failed_checks": [
+        "metric"
+      ]
+    },
+    {
+      "set": "heldout",
+      "u": "top ten products",
+      "expected": "top_n",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout",
+      "u": "best 3 suppliers by rating",
+      "expected": "top_n",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout",
+      "u": "who sells corrugated boxes at the best price",
+      "expected": "compare_suppliers",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout",
+      "u": "what is the stock level of ball bearings",
+      "expected": "entity_lookup",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout",
+      "u": "PO-2026-0276 details",
+      "expected": "entity_lookup",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout",
+      "u": "need 1000 pcs of ball bearing from the cheapest supplier",
+      "expected": "create_po",
+      "got": "compare_suppliers",
+      "failed_checks": [
+        "write_needs_confirmation"
+      ]
+    },
+    {
+      "set": "heldout",
+      "u": "make reorder point for brass fittings 600",
+      "expected": "update_inventory",
+      "got": "create_po_bulk",
+      "failed_checks": []
+    },
+    {
+      "set": "heldout",
+      "u": "ship order SO-106936",
+      "expected": "update_order_status",
+      "got": "update_order_status",
+      "failed_checks": [
+        "write_needs_confirmation"
+      ]
+    }
+  ]
+}

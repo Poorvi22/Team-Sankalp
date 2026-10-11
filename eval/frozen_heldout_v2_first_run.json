@@ -1,0 +1,413 @@
+{
+  "generated_at": "2026-10-10T18:24:11+00:00",
+  "corpus": {
+    "dev": 129,
+    "heldout_v1": 70,
+    "heldout_v2": 69,
+    "retrieval_queries": 30,
+    "scenarios": 10
+  },
+  "metrics": [
+    {
+      "metric": "Intent routing — FRESH held-out v2 (written after tuning, run once)",
+      "value": "78.3% (69 utterances)",
+      "target": "≥ 85%",
+      "note": "The honest generalisation figure. Includes typo / idiom / indirect-wording cases on purpose. Same author as the system."
+    },
+    {
+      "metric": "Intent routing — held-out v1, first run (before any fix)",
+      "value": "75.7% (70 utterances)",
+      "target": "—",
+      "note": "Measured once, then the failures were fixed generically; v1 is therefore tuned-on from here."
+    },
+    {
+      "metric": "Intent routing — dev + held-out v1 (tuned on)",
+      "value": "100.0% (199 utterances)",
+      "target": "≥ 95%",
+      "note": "In-distribution; shown for regression tracking, not as a generalisation claim."
+    },
+    {
+      "metric": "Intent-to-destination accuracy — fresh v2",
+      "value": "78.9% (19 navigation requests)",
+      "target": "≥ 90%",
+      "note": "Tuned sets: 100.0% (69)."
+    },
+    {
+      "metric": "UI-state correctness — fresh v2 (every filter, range and sort exactly right)",
+      "value": "72.2% (18 requests)",
+      "target": "≥ 85%",
+      "note": "Per-filter recall 81.8%, 1 unrequested filters. Tuned sets: 100.0% (62)."
+    },
+    {
+      "metric": "Slot extraction (metric / period / entity / N / horizon) — fresh v2",
+      "value": "95.5% (44 slots)",
+      "target": "≥ 90%",
+      "note": "metric 93.3%, period 100.0%, entities 100.0%, top_n 50.0%, horizon 100.0%"
+    },
+    {
+      "metric": "Multi-step task success (verified against the database)",
+      "value": "10/10 scenarios",
+      "target": "100%",
+      "note": "Avg 2.6 steps and 38 ms per scenario including the confirmation round-trip."
+    },
+    {
+      "metric": "Numeric faithfulness vs independent SQL",
+      "value": "6/6 answers match",
+      "target": "100%",
+      "note": "Revenue, orders, top-N, MoM compare, stock-out set and on-time rate recomputed with separate hand-written SQL."
+    },
+    {
+      "metric": "Explanation evidence links valid",
+      "value": "9/9 bullets link to a real view",
+      "target": "100%",
+      "note": "Every claim in a 'why' answer carries a source chip with a valid page + filters."
+    },
+    {
+      "metric": "Retrieval over app metadata — MRR@10",
+      "value": "0.953 (R@1 93.3%, R@3 96.7%) over 369 docs",
+      "target": "≥ 0.80",
+      "note": "30 queries across pages, widgets, filters and APIs. Queries written by the author; API docs were enriched with usage phrases after a first run scored MRR 0.79."
+    },
+    {
+      "metric": "Retrieval at scale (+600 synthetic distractor components)",
+      "value": "0.829 (R@1 76.7%, R@3 83.3%) over 969 docs",
+      "target": "≥ 0.70",
+      "note": "Hard negatives sampled from the same vocabulary; lexical-semantic index, no dense embeddings."
+    },
+    {
+      "metric": "Action hallucination (invalid page / filter emitted)",
+      "value": "0 of 268 turns",
+      "target": "0",
+      "note": "Each emitted navigate action is validated against the page's declared filter schema."
+    },
+    {
+      "metric": "Writes executed without confirmation",
+      "value": "0 of 268 turns",
+      "target": "0",
+      "note": "93.0% of write requests produced a confirmation or pre-filled form (43); the rest were refused or clarified."
+    },
+    {
+      "metric": "Out-of-scope / adversarial requests handled safely — fresh v2",
+      "value": "83.3% (6 requests)",
+      "target": "100%",
+      "note": "No navigation, write plan or invented answer. All sets: 94.4% (18)."
+    },
+    {
+      "metric": "Latency, fast path (end-to-end, in-process)",
+      "value": "p50 2 ms · p95 12 ms · max 21 ms",
+      "target": "p95 < 150 ms",
+      "note": "Warm; first request after start-up 45 ms. Excludes network and any LLM call (none were made)."
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "bulk replenishment (plan -> confirm -> drafts)",
+      "ok": true,
+      "steps": 6,
+      "ms": 12.1,
+      "note": "8 drafts for 8/8 at-risk products"
+    },
+    {
+      "name": "single PO: form pre-fill -> confirm",
+      "ok": true,
+      "steps": 3,
+      "ms": 55.1,
+      "note": ""
+    },
+    {
+      "name": "submit drafts (auto-approve <= $50k, queue above)",
+      "ok": true,
+      "steps": 2,
+      "ms": 50.2,
+      "note": "16 drafts"
+    },
+    {
+      "name": "approvals respect role limit",
+      "ok": true,
+      "steps": 2,
+      "ms": 43.6,
+      "note": "3 approved, 2 above limit stay queued"
+    },
+    {
+      "name": "stock adjustment applied",
+      "ok": true,
+      "steps": 2,
+      "ms": 46.4,
+      "note": ""
+    },
+    {
+      "name": "receive PO increases stock",
+      "ok": true,
+      "steps": 2,
+      "ms": 48.9,
+      "note": ""
+    },
+    {
+      "name": "delete only drafts (non-draft refused)",
+      "ok": true,
+      "steps": 3,
+      "ms": 48.7,
+      "note": ""
+    },
+    {
+      "name": "cancelling a confirmation changes nothing",
+      "ok": true,
+      "steps": 2,
+      "ms": 57.2,
+      "note": ""
+    },
+    {
+      "name": "follow-up ('and for Europe?') inherits metric + periods",
+      "ok": true,
+      "steps": 2,
+      "ms": 6.4,
+      "note": ""
+    },
+    {
+      "name": "explain_change finds Metals + supplier delays, with linked evidence",
+      "ok": true,
+      "steps": 2,
+      "ms": 15.0,
+      "note": "9/9 evidence links valid"
+    }
+  ],
+  "by_set": {
+    "dev": {
+      "n": 129,
+      "intent_acc": 100.0,
+      "dest_acc": 100.0,
+      "dest_n": 50,
+      "ui_exact": 100.0,
+      "ui_n": 44,
+      "ui_key_recall": 100.0,
+      "ui_extra_keys": 0,
+      "slot_acc": 100.0,
+      "slot_n": 72,
+      "slot_detail": {
+        "metric": 100.0,
+        "period": 100.0,
+        "entities": 100.0,
+        "top_n": 100.0,
+        "horizon": 100.0
+      },
+      "write_confirmed": 100.0,
+      "write_n": 21,
+      "oos_safe": 100.0,
+      "oos_n": 7,
+      "halluc": 0,
+      "unconfirmed_writes": 0
+    },
+    "heldout": {
+      "n": 70,
+      "intent_acc": 100.0,
+      "dest_acc": 100.0,
+      "dest_n": 19,
+      "ui_exact": 100.0,
+      "ui_n": 18,
+      "ui_key_recall": 100.0,
+      "ui_extra_keys": 0,
+      "slot_acc": 100.0,
+      "slot_n": 42,
+      "slot_detail": {
+        "metric": 100.0,
+        "period": 100.0,
+        "top_n": 100.0,
+        "entities": 100.0,
+        "horizon": 100.0
+      },
+      "write_confirmed": 100.0,
+      "write_n": 11,
+      "oos_safe": 100.0,
+      "oos_n": 5,
+      "halluc": 0,
+      "unconfirmed_writes": 0
+    },
+    "heldout2": {
+      "n": 69,
+      "intent_acc": 78.3,
+      "dest_acc": 78.9,
+      "dest_n": 19,
+      "ui_exact": 72.2,
+      "ui_n": 18,
+      "ui_key_recall": 81.8,
+      "ui_extra_keys": 1,
+      "slot_acc": 95.5,
+      "slot_n": 44,
+      "slot_detail": {
+        "metric": 93.3,
+        "period": 100.0,
+        "entities": 100.0,
+        "top_n": 50.0,
+        "horizon": 100.0
+      },
+      "write_confirmed": 72.7,
+      "write_n": 11,
+      "oos_safe": 83.3,
+      "oos_n": 6,
+      "halluc": 0,
+      "unconfirmed_writes": 0
+    }
+  },
+  "caveat": "Synthetic corpora authored together with the system. v2 was not used for tuning, but is not independent of the author. No real-user traffic was measured.",
+  "failures": [
+    {
+      "set": "heldout-v2",
+      "u": "sales for Packaging in APAC during the last 3 months",
+      "expected": "show_view",
+      "got": "kpi_query",
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout-v2",
+      "u": "suppliers in Mexico with a rating of 4.5 or more",
+      "expected": "show_view",
+      "got": "show_view",
+      "failed_checks": [
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout-v2",
+      "u": "what are my approved purchase orders",
+      "expected": "show_view",
+      "got": "kpi_query",
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout-v2",
+      "u": "procurment page",
+      "expected": "show_view",
+      "got": null,
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout-v2",
+      "u": "what are you good for",
+      "expected": "help",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout-v2",
+      "u": "start fresh",
+      "expected": "reset_filters",
+      "got": null,
+      "failed_checks": [
+        "destination",
+        "ui_state"
+      ]
+    },
+    {
+      "set": "heldout-v2",
+      "u": "how much did we spend on procurement in 2025",
+      "expected": "kpi_query",
+      "got": "kpi_query",
+      "failed_checks": [
+        "metric"
+      ]
+    },
+    {
+      "set": "heldout-v2",
+      "u": "put this quarter next to last quarter for revenue",
+      "expected": "compare_periods",
+      "got": "kpi_query",
+      "failed_checks": []
+    },
+    {
+      "set": "heldout-v2",
+      "u": "weakest suppliers by on time delivery",
+      "expected": "top_n",
+      "got": "show_view",
+      "failed_checks": []
+    },
+    {
+      "set": "heldout-v2",
+      "u": "five best-selling products in europe",
+      "expected": "top_n",
+      "got": "top_n",
+      "failed_checks": [
+        "top_n"
+      ]
+    },
+    {
+      "set": "heldout-v2",
+      "u": "what could we run short of before the end of the month",
+      "expected": "stockout_forecast",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout-v2",
+      "u": "which items will hit zero within 3 weeks",
+      "expected": "stockout_forecast",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout-v2",
+      "u": "who has the best price on PVC pipe",
+      "expected": "compare_suppliers",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout-v2",
+      "u": "tell me what you know about Titan Alloys",
+      "expected": "entity_lookup",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout-v2",
+      "u": "give me the rundown on Ironbridge Distributors",
+      "expected": "entity_lookup",
+      "got": null,
+      "failed_checks": []
+    },
+    {
+      "set": "heldout-v2",
+      "u": "please place an order for 750 units of Corrugated Box with PackRight",
+      "expected": "create_po",
+      "got": "create_po",
+      "failed_checks": [
+        "write_needs_confirmation"
+      ]
+    },
+    {
+      "set": "heldout-v2",
+      "u": "turn down PO-2026-0273",
+      "expected": "approve_po",
+      "got": "entity_lookup",
+      "failed_checks": [
+        "write_needs_confirmation"
+      ]
+    },
+    {
+      "set": "heldout-v2",
+      "u": "flip SO-106926 to shipped",
+      "expected": "update_order_status",
+      "got": "entity_lookup",
+      "failed_checks": [
+        "write_needs_confirmation"
+      ]
+    },
+    {
+      "set": "heldout-v2",
+      "u": "refund customer order SO-106924",
+      "expected": "none",
+      "got": "entity_lookup",
+      "failed_checks": [
+        "no_action_taken"
+      ]
+    }
+  ]
+}
